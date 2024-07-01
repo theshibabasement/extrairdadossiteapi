@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 import re
 import requests
+import ssl
 
 app = Flask(__name__)
 
@@ -32,7 +33,7 @@ def extract_data(url):
         cnpj = cnpj_match.group() if cnpj_match else None
         
         # Extrai o WhatsApp
-        whatsapp_pattern = r'https?://(?:api\.whatsapp\.com/send\?phone=|wa\.me/)(\d+)'
+        whatsapp_pattern = r'(?:https?://)?(?:api\.whatsapp\.com/send\?l=pt_br&phone=|wa\.me/)(\d+)'
         whatsapp_match = re.search(whatsapp_pattern, content)
         whatsapp = whatsapp_match.group(1) if whatsapp_match else None
         
@@ -69,9 +70,9 @@ def extract_endpoint():
             return jsonify({'error': 'Failed to extract data'}), 500
     else:
         return jsonify({'error': 'URL not provided'}), 400
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=3000)
-
 
 
 
